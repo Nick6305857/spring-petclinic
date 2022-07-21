@@ -31,10 +31,5 @@ pipeline{
 				junit 'springpetclinic/target/surefire-reports/*.xml'
 			}
 		}
-		stage ('pushing the artifact into the s3 bucket') {
-		    steps {
-			   s3Upload consoleLogLevel: 'INFO', dontSetBuildResultOnFailure: false, dontWaitForConcurrentBuildCompletion: false, entries: [[bucket: 'jenkins-kutti-chinni/${JOB_NAME}-${BUILD_NUMBER}', excludedFile: '', flatten: false, gzipFiles: false, keepForever: false, managedArtifacts: false, noUploadOnFailure: false, selectedRegion: 'us-iso-east-1', showDirectlyInBrowser: false, sourceFile: 'springpetclinic/target*.jar', storageClass: 'STANDARD', uploadFromSlave: false, useServerSideEncryption: false]], pluginFailureResultConstraint: 'FAILURE', profileName: 'jenkins', userMetadata: [] 
-			}
-		}
 	}
 }
