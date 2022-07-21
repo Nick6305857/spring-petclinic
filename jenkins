@@ -1,0 +1,40 @@
+pipeline{
+   agent {
+      label ('master')   
+   }
+	  options {
+		timestamps()
+	}
+	  stages{
+		stage ('nikhil'){
+		   steps{
+		       echo"this project is for creating artifact and pulishing the artifact in the s3 bucket"
+			}
+		}
+		stage ('Checkout Code from GIT-HUB') {
+			steps {
+				git 'https://github.com/Nick6305857/spring-petclinic.git'
+			}
+		}
+		stage ('build Code with Maven') {
+			steps {
+				sh 'mvn clean package'
+			}
+		}
+		stage ('Archive Artifact') {
+			steps {
+				archive 'springpetclinic/target*.jar'
+			}
+		}
+		stage ('Publish JUnit Test Results') {
+			steps {
+				junit 'springpetclinic/target/surefire-reports/*.xml'
+			}
+		}
+		stage ('pushing the artifact into the s3 bucket') {
+		    steps {
+			   s3Upload consoleLogLevel: 'INFO', dontSetBuildResultOnFailure: false, dontWaitForConcurrentBuildCompletion: false, entries: [[bucket: 'jenkins-kutti-chinni/${JOB_NAME}-${BUILD_NUMBER}', excludedFile: '', flatten: false, gzipFiles: false, keepForever: false, managedArtifacts: false, noUploadOnFailure: false, selectedRegion: 'us-iso-east-1', showDirectlyInBrowser: false, sourceFile: 'springpetclinic/target*.jar', storageClass: 'STANDARD', uploadFromSlave: false, useServerSideEncryption: false]], pluginFailureResultConstraint: 'FAILURE', profileName: 'jenkins', userMetadata: [] 
+			}
+		}
+	}
+}
